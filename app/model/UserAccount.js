@@ -6,12 +6,16 @@ const UserAccount = sequelize.define(
   "UserAccount",
   {
     // id主键,自增,非空,无符号,整型,长度10,关联User表
-    user_id: {
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
       unsigned: true,
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
       comment: "用户id",
     },
     // 账号余额,非空,默认值0,长度10
@@ -46,14 +50,12 @@ const UserAccount = sequelize.define(
     vip_start_time: {
       type: DataTypes.DATE,
       allowNull: true,
-      defaultValue: Sequelize.NOW,
       comment: "vip 开启时间",
     },
     // vip 结束时间
     vip_end_time: {
       type: DataTypes.DATE,
       allowNull: true,
-      defaultValue: Sequelize.NOW,
       comment: "vip 结束时间",
     },
     // 个人空间是否开放
@@ -91,9 +93,8 @@ const UserAccount = sequelize.define(
   {
     sequelize,
     tableName: prefix + "user_account",
+    timestamps: true,
   }
 );
-
-UserAccount.sync({ force: true });
 
 module.exports = UserAccount;

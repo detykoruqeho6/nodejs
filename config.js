@@ -8,4 +8,5 @@ module.exports = {
   },
   public: "public",
   prefix: process.env.TABLE_PREFIX,
+  token_secret: "express-!@#$%^&*()!@$#$^%^*&*",
 };

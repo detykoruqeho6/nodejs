@@ -8,8 +8,10 @@ const validate = (validations) => {
       return next();
     }
 
-    res.status(400).json({
-      errors: errors.array(),
+    const extractedErrors = [];
+    errors.array().map((err) => extractedErrors.push({ [err.param]: err.msg }));
+    return res.status(422).json({
+      errors: extractedErrors,
     });
   };
 };

@@ -2,6 +2,7 @@ const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../../package/mysql");
 const { randomString } = require("../../app/common");
 const { prefix } = require("../../config");
+const UserAccount = require("./UserAccount");
 
 const User = sequelize.define(
   "User",
@@ -32,7 +33,7 @@ const User = sequelize.define(
     salt: {
       type: DataTypes.STRING(10),
       allowNull: false,
-      defaultValue: randomString(6),
+      defaultValue: "",
       comment: "密码加密盐",
     },
     // 邮箱,非空,长度50,唯一
@@ -85,14 +86,13 @@ const User = sequelize.define(
     tableName: prefix + "User",
   }
 );
-
-User.hasOne(require("./UserAccount"), {
-  foreignKey: "id",
-  sourceKey: "id",
-  as: "userAccount",
-});
-
-// 创建表
-// User.sync({ force: true });
+// 关联User账户表
+User.associations = function (models) {
+  User.hasOne(UserAccount, {
+    foreignKey: "user_id",
+    sourceKey: "id",
+    as: "UserAccount",
+  });
+};
 
 module.exports = User;
