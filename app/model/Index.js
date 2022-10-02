@@ -1,0 +1,2 @@
+require("./Dictionary");
+require("./DictionaryCate");
