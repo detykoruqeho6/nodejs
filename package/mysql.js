@@ -11,6 +11,8 @@ const sequelize = new Sequelize(mysql.database, mysql.user, mysql.password, {
     freezeTableName: true,
     paranoid: false,
   },
+  // 不清除数据库中的数据
+  dropSchema: true,
   // pool: {
   //   max: 5,
   //   min: 0,
@@ -23,6 +25,6 @@ const sequelize = new Sequelize(mysql.database, mysql.user, mysql.password, {
   // },
 });
 
-sequelize.sync({ force: true });
+sequelize.sync({ force: false });
 
 module.exports = sequelize;

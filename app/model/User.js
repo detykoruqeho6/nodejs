@@ -86,13 +86,10 @@ const User = sequelize.define(
     tableName: prefix + "User",
   }
 );
-// 关联User账户表
-User.associations = function (models) {
-  User.hasOne(UserAccount, {
-    foreignKey: "user_id",
-    sourceKey: "id",
-    as: "UserAccount",
-  });
-};
-
+// 关联User账户表,此表id对应账号表user_id
+User.hasOne(require("./UserAccount"), {
+  foreignKey: "user_id",
+  sourceKey: "id",
+  as: "user_account",
+});
 module.exports = User;

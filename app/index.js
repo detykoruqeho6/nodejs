@@ -6,5 +6,6 @@ router.get("/", (req, res) => {
 });
 
 router.use("/user", require("./router/user-router"));
+router.use("/captcha", require("./router/captch-router"));
 
 module.exports = router;

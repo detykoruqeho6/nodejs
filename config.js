@@ -9,4 +9,12 @@ module.exports = {
   public: "public",
   prefix: process.env.TABLE_PREFIX,
   token_secret: "express-!@#$%^&*()!@$#$^%^*&*",
+  email: {
+    host: "smtp.163.com",
+    port: 465,
+    auth: {
+      user: "kucaisr@163.com",
+      pass: "CSUNQWPLJVHJUCPK",
+    },
+  },
 };
