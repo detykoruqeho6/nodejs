@@ -42,13 +42,7 @@ exports.login = async (req, res) => {
   // 寻找账号是传入的,或者邮箱是传入的
   // 判断传入账号是否是邮箱
   const isEmail = account.indexOf("@") > -1;
-  const where = isEmail
-    ? {
-        email: account,
-      }
-    : {
-        account,
-      };
+  const where = isEmail ? { email: account } : { account };
   const user = await UserModel.findOne({
     where,
     attributes: [
@@ -64,7 +58,7 @@ exports.login = async (req, res) => {
       {
         model: UserAccountModel,
         as: "user_account",
-        attributes: ["user_id", "last_ip", "last_time"],
+        attributes: ["last_login_time", "is_freeze"],
       },
     ],
   });

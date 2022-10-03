@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const { token_secret } = require("../config");
+const client = require("../package/redis");
 
 exports.success = (res, data, message) => {
   res.status(200).json({
@@ -94,4 +95,16 @@ exports.generateToken = (data) => {
 // 解析token
 exports.verifyToken = (token) => {
   return jwt.verify(token, token_secret);
+};
+
+// 验证token是否过期
+exports.verifyTokenExp = (token) => {
+  const decoded = jwt.decode(token, { complete: true });
+  return decoded.payload.exp < new Date().getTime() / 1000;
+};
+
+// 验证输入的邮箱验证码是否正确
+exports.verifyEmailCaptcha = async (email, captcha) => {
+  const _captcha = await client.get(email);
+  return captcha === _captcha;
 };
