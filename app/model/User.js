@@ -86,10 +86,37 @@ const User = sequelize.define(
     tableName: prefix + "User",
   }
 );
-// 关联User账户表,此表id对应账号表user_id
-User.belongsTo(require("./UserAccount"), {
-  foreignKey: "id",
-  sourceKey: "user_id",
-  as: "user_account",
+
+User.hasOne(UserAccount, {
+  foreignKey: {
+    name: "id",
+    allowNull: false,
+  },
+  targetKey: "user_id",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+  as: "hasAccount",
 });
+
+UserAccount.belongsTo(User, {
+  foreignKey: {
+    name: "user_id",
+    allowNull: false,
+  },
+  targetKey: "id",
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+  as: "belongsToUser",
+});
+// User.associate = function (models) {
+//   User.hasOne(UserAccount, {
+//     foreignKey: {
+//       name: "user_id",
+//       allowNull: false,
+//     },
+//     onDelete: "CASCADE",
+//     onUpdate: "CASCADE",
+//     as: "user_account",
+//   });
+// };
 module.exports = User;

@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../../package/mysql");
 const { prefix } = require("../../config");
+const User = require("./User");
 
 const UserAccount = sequelize.define(
   "UserAccount",
@@ -104,11 +105,4 @@ const UserAccount = sequelize.define(
   }
 );
 
-// hasOne User
-UserAccount.associate = function (models) {
-  UserAccount.hasOne(require("./User"), {
-    foreignKey: "user_id",
-    as: "user",
-  });
-};
 module.exports = UserAccount;

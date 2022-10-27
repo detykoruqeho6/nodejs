@@ -48,23 +48,25 @@ exports.login = async (req, res) => {
   const user = await UserModel.findOne({
     where,
     attributes: ["id", "password", "salt"],
+    // 关联账号表
     include: [
       {
         model: UserAccountModel,
-        as: "user_account",
-        attributes: ["last_login_time", "last_ip", "last_system"],
+        as: "hasAccount",
+        attributes: ["id", "is_freeze"],
       },
     ],
   });
+  console.log(user["dataValues"]["hasAccount"]["dataValues"]);
   // 验证密码
   if (user) {
     const result = verifyPassword(password, user.salt, user.password);
     if (result) {
-      const token = generateToken(user.dataValues);
+      const token = generateToken(user["dataValues"]);
 
       const result = user;
       const isFreeze =
-        result["dataValues"]["user_account"]["dataValues"]["is_freeze"];
+        result["dataValues"]["hasAccount"]["dataValues"]["is_freeze"];
       console.log(isFreeze);
       if (isFreeze == 1) {
         return COMMON.error(res, [], "账号已封禁");
@@ -98,8 +100,8 @@ exports.wxLogin = async (req, res) => {
       attributes: ["id", "is_freeze"],
       include: [
         {
-          model: "User",
-          as: "user",
+          model: UserModel,
+          as: "belongsToUser",
         },
       ],
     });
