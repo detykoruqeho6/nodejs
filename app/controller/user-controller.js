@@ -5,9 +5,11 @@ const {
   encryptPassword,
   verifyPassword,
   generateToken,
+  getOpenId,
 } = require("../common");
 const { Op } = require("sequelize");
 
+// 注册
 exports.register = async (req, res) => {
   try {
     const { account, password, email, phone } = req.body;
@@ -36,7 +38,7 @@ exports.register = async (req, res) => {
     return COMMON.error(res, [], error.message);
   }
 };
-
+// 账号/邮箱登录
 exports.login = async (req, res) => {
   const { account, password } = req.body;
   // 寻找账号是传入的,或者邮箱是传入的
@@ -45,20 +47,12 @@ exports.login = async (req, res) => {
   const where = isEmail ? { email: account } : { account };
   const user = await UserModel.findOne({
     where,
-    attributes: [
-      "id",
-      "account",
-      "email",
-      "phone",
-      "password",
-      "salt",
-      "createdAt",
-    ],
+    attributes: ["id", "password", "salt"],
     include: [
       {
         model: UserAccountModel,
         as: "user_account",
-        attributes: ["last_login_time", "is_freeze"],
+        attributes: ["last_login_time", "last_ip", "last_system"],
       },
     ],
   });
@@ -69,6 +63,12 @@ exports.login = async (req, res) => {
       const token = generateToken(user.dataValues);
 
       const result = user;
+      const isFreeze =
+        result["dataValues"]["user_account"]["dataValues"]["is_freeze"];
+      console.log(isFreeze);
+      if (isFreeze == 1) {
+        return COMMON.error(res, [], "账号已封禁");
+      }
       delete result["dataValues"].password;
       delete result["dataValues"].salt;
       delete result["dataValues"].id;
@@ -79,18 +79,81 @@ exports.login = async (req, res) => {
     }
     return COMMON.error(res, "密码错误");
   } else {
-    return COMMON.error(res, "账号不存在");
+    return COMMON.error(res, "该账号还未注册哦~");
   }
 };
+// 微信登录
+exports.wxLogin = async (req, res) => {
+  try {
+    const { code, encryptedData, iv } = req.body;
+    const { openid, session_key } = await getOpenId(code);
+    console.log(openid); // 用户唯一标识
+    console.log(session_key); // 会话密钥
+
+    // 将用户信息存入数据库
+    const user = await UserAccountModel.findOne({
+      where: {
+        openid,
+      },
+      attributes: ["id", "is_freeze"],
+      include: [
+        {
+          model: "User",
+          as: "user",
+        },
+      ],
+    });
+    if (!user) {
+      // 如果两个表都不存在,则创建
+      const user = await UserModel.create({});
+      const user_account = await UserAccountModel.create({
+        user_id: user.id,
+        openid,
+        session_key,
+        last_ip: req.ip,
+      });
+      const token = generateToken(user.dataValues);
+      return COMMON.success(res, {
+        ...user.dataValues,
+        token,
+      });
+    } else {
+      // 如果存在,则更新session_key
+      await UserAccountModel.update(
+        {
+          session_key,
+        },
+        {
+          where: {
+            openid,
+          },
+        }
+      );
+      const token = generateToken(user.dataValues);
+      return COMMON.success(res, {
+        ...user.dataValues,
+        token,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    return COMMON.serverError(res, [], err.message);
+  }
+};
+
+// 退出登录
 exports.logout = async (req, res) => {
   COMMON.success(res, "退出成功");
 };
+// 修改个人信息
 exports.update = async (req, res) => {
   COMMON.success(res, "更新成功");
 };
+// 账号注销
 exports.delete = async (req, res) => {
   COMMON.success(res, "注销成功");
 };
+// 获取用户信息
 exports.info = async (req, res) => {
   COMMON.success(res, "获取成功");
 };

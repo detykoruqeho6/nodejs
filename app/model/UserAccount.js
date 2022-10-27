@@ -46,6 +46,13 @@ const UserAccount = sequelize.define(
       defaultValue: "",
       comment: "微信openid",
     },
+    // session_key
+    session_key: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+      defaultValue: "",
+      comment: "微信session_key",
+    },
     // vip 开启时间
     vip_start_time: {
       type: DataTypes.DATE,
@@ -97,4 +104,11 @@ const UserAccount = sequelize.define(
   }
 );
 
+// hasOne User
+UserAccount.associate = function (models) {
+  UserAccount.hasOne(require("./User"), {
+    foreignKey: "user_id",
+    as: "user",
+  });
+};
 module.exports = UserAccount;

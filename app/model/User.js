@@ -19,34 +19,34 @@ const User = sequelize.define(
     // account账号,非空,唯一,长度20
     account: {
       type: DataTypes.STRING(20),
-      allowNull: false,
+      allowNull: true,
       unique: true,
       comment: "账号",
     },
     // password密码,非空,长度100
     password: {
       type: DataTypes.STRING(100),
-      allowNull: false,
+      allowNull: true,
       comment: "密码",
     },
     // salt盐,非空,默认值0,长度10
     salt: {
       type: DataTypes.STRING(10),
-      allowNull: false,
+      allowNull: true,
       defaultValue: "",
       comment: "密码加密盐",
     },
     // 邮箱,非空,长度50,唯一
     email: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
       unique: true,
       comment: "邮箱",
     },
     // 手机号,非空,长度11,唯一
     phone: {
       type: DataTypes.STRING(11),
-      allowNull: false,
+      allowNull: true,
       unique: true,
       comment: "手机号",
     },
@@ -87,9 +87,9 @@ const User = sequelize.define(
   }
 );
 // 关联User账户表,此表id对应账号表user_id
-User.hasOne(require("./UserAccount"), {
-  foreignKey: "user_id",
-  sourceKey: "id",
+User.belongsTo(require("./UserAccount"), {
+  foreignKey: "id",
+  sourceKey: "user_id",
   as: "user_account",
 });
 module.exports = User;

@@ -1,7 +1,8 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const { token_secret } = require("../config");
+const { token_secret, appId, appSecret } = require("../config");
 const client = require("../package/redis");
+const axios = require("axios");
 
 exports.success = (res, data, message) => {
   res.status(200).json({
@@ -75,6 +76,20 @@ exports.verifyPassword = (password, salt, hash) => {
   const _hash = crypto.createHash("sha256");
   _hash.update(password + salt);
   return _hash.digest("hex") === hash;
+};
+
+exports.getOpenId = async (code) => {
+  try {
+    const { appId, appSecret } = require("../config");
+    const { data } = await axios.get(
+      `https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${appSecret}&js_code=${code}&grant_type=authorization_code`
+    );
+    if (!data.openid && data?.errmsg)
+      throw new Error("openid获取失败:" + data.errmsg);
+    return data;
+  } catch (err) {
+    throw err;
+  }
 };
 
 // 生成token,过期时间1天
