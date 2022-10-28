@@ -57,7 +57,6 @@ exports.login = async (req, res) => {
       },
     ],
   });
-  console.log(user["dataValues"]["hasAccount"]["dataValues"]);
   // 验证密码
   if (user) {
     const result = verifyPassword(password, user.salt, user.password);
@@ -89,8 +88,8 @@ exports.wxLogin = async (req, res) => {
   try {
     const { code, encryptedData, iv } = req.body;
     const { openid, session_key } = await getOpenId(code);
-    console.log(openid); // 用户唯一标识
-    console.log(session_key); // 会话密钥
+    // console.log(openid); // 用户唯一标识
+    // console.log(session_key); // 会话密钥
 
     // 将用户信息存入数据库
     const user = await UserAccountModel.findOne({
@@ -101,7 +100,8 @@ exports.wxLogin = async (req, res) => {
       include: [
         {
           model: UserModel,
-          as: "belongsToUser",
+          as: "hasUser",
+          attributes: ["id", "account", "email", "phone"],
         },
       ],
     });
@@ -115,6 +115,9 @@ exports.wxLogin = async (req, res) => {
         last_ip: req.ip,
       });
       const token = generateToken(user.dataValues);
+      if (user_account.dataValues.is_freeze == 1) {
+        return COMMON.error(res, [], "账号已封禁");
+      }
       return COMMON.success(res, {
         ...user.dataValues,
         token,
@@ -149,13 +152,83 @@ exports.logout = async (req, res) => {
 };
 // 修改个人信息
 exports.update = async (req, res) => {
-  COMMON.success(res, "更新成功");
+  try {
+    const { phone, id, password } = req.body;
+    let salt = null,
+      cypPassword = null;
+    if (phone) {
+      salt = randomString(6);
+      cypPassword = encryptPassword(password ? password : phone, salt);
+    }
+
+    const user = await UserModel.update(
+      {
+        account: phone || null,
+        password: cypPassword ? cypPassword.password : null,
+        salt: cypPassword ? cypPassword.salt : null,
+        ...req.body,
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    );
+    if (user) {
+      return COMMON.success(res, [], "个人信息修改成功");
+    }
+  } catch (error) {
+    return COMMON.error(res, null, error.message);
+  }
 };
 // 账号注销
 exports.delete = async (req, res) => {
-  COMMON.success(res, "注销成功");
+  try {
+    const { id } = req.body;
+    const user = await UserModel.destroy({
+      where: {
+        id,
+      },
+    });
+    if (user) {
+      return COMMON.success(res, [], "账号注销成功");
+    }
+  } catch (error) {
+    return COMMON.error(res, null, error.message);
+  }
 };
 // 获取用户信息
 exports.info = async (req, res) => {
-  COMMON.success(res, "获取成功");
+  try {
+    const { id } = req.body;
+    if (!id) return COMMON.error(res, null, "参数错误");
+    const user = await UserModel.findOne({
+      where: {
+        id,
+      },
+      attributes: [
+        "id",
+        "account",
+        "email",
+        "phone",
+        "avatar",
+        "nickname",
+        "introduction",
+        "gender",
+      ],
+      // include: [
+      //   {
+      //     model: UserAccountModel,
+      //     as: "hasAccount",
+      //     attributes: ["id", "is_freeze"],
+      //   },
+      // ],
+    });
+    if (user) {
+      return COMMON.success(res, user, "获取用户信息成功");
+    }
+    return COMMON.error(res, null, "获取用户信息失败,用户不存在");
+  } catch (error) {
+    return COMMON.error(res, null, error.message);
+  }
 };

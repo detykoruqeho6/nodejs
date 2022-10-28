@@ -106,17 +106,7 @@ UserAccount.belongsTo(User, {
   targetKey: "id",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
-  as: "belongsToUser",
+  as: "hasUser",
 });
-// User.associate = function (models) {
-//   User.hasOne(UserAccount, {
-//     foreignKey: {
-//       name: "user_id",
-//       allowNull: false,
-//     },
-//     onDelete: "CASCADE",
-//     onUpdate: "CASCADE",
-//     as: "user_account",
-//   });
-// };
+
 module.exports = User;
