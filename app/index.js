@@ -7,6 +7,7 @@ router.get("/", (req, res) => {
 
 router.use("/user", require("./router/user-router"));
 router.use("/captcha", require("./router/captch-router"));
+router.use("/source", require("./router/source-router"));
 router.use("/test", require("./router/test"));
 
 module.exports = router;
