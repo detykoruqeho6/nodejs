@@ -123,3 +123,8 @@ exports.verifyEmailCaptcha = async (email, captcha) => {
   const _captcha = await client.get(email);
   return captcha === _captcha;
 };
+
+// 获取服务端域名或ip
+exports.getServerHost = (req) => {
+  return req.protocol + "://" + req.headers.host;
+};

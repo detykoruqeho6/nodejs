@@ -5,128 +5,72 @@ const {
   promises: { writeFile, appendFile },
   existsSync,
 } = require("fs");
-const CacheModule = require("../../package/cache");
+const { getServerHost } = require("../common");
 
-// 切片函数
-function sliceFileBuffer(fileBuffer) {
-  const fileBufferLength = fileBuffer.length;
-  const sliceSize = 1024 * 1024 * 2; // 2M
-  const sliceCount = Math.ceil(fileBufferLength / sliceSize);
-  const sliceList = [];
-  for (let i = 0; i < sliceCount; i++) {
-    const start = i * sliceSize;
-    const end = Math.min(fileBufferLength, start + sliceSize);
-    sliceList.push(fileBuffer.slice(start, end));
-  }
-  return sliceList;
-}
-
-// 判断文件夹是否存在，不存在则创建
-function mkdirsSync(dirname) {
-  if (existsSync(dirname)) {
+// 判断文件夹是否存在，如果不存在则创建文件夹
+const dirExists = (dirname) => {
+  if (fs.existsSync(dirname)) {
     return true;
   } else {
-    if (mkdirsSync(path.dirname(dirname))) {
+    if (dirExists(path.dirname(dirname))) {
       fs.mkdirSync(dirname);
       return true;
     }
   }
-}
+};
 
-// 合并切片
-function mergeFileBuffer(sliceList) {
-  return Buffer.concat(sliceList);
-}
+// 将 bytes 转为 mb
+const bytesToSize = (bytes) => {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return (bytes / Math.pow(k, i)).toPrecision(3) + " " + sizes[i];
+};
 
-exports.uploadImageLocal = async (req, res, next) => {
+// 文件上传,单图片上传
+exports.uploadImage = async (req, res, next) => {
   try {
-    if (!req.files || Object.keys(req.files).length === 0) {
-      return res.status(400).send("No files were uploaded.");
-    }
-    let uploaded = 0; // 已上传的切片数量
-
-    const file = req.files;
-    const files = Object.values(file);
-    const result = await Promise.all(
-      files.map(async (file) => {
-        const { name, size, mimetype, md5 } = file;
-        const ext = extname(name);
-        const fileName = md5 + ext;
-        // 设置当前文件对应的MD5缓存
-        const cache = CacheModule.get(md5);
-        if (cache) {
-          uploaded = Number(cache);
-        }
-
-        // 合并切片
-        while (uploaded < size) {
-          const fileBufferS = await file.data;
-          const sliceList = sliceFileBuffer(fileBufferS);
-          const fileBufferList = sliceList.map((slice) => {
-            return slice;
-          });
-          const fileBuffer = mergeFileBuffer(fileBufferList);
-          const filePath = resolve(
-            __dirname,
-            `../../public/upload/${fileName}`
-          );
-          await writeFile(filePath, fileBuffer);
-          uploaded += fileBuffer.length;
-          CacheModule.set(md5, uploaded);
-        }
-
-        // const fileBuffer = file.data;
-        // const sliceList = sliceFileBuffer(fileBuffer);
-        // const filePath = resolve(
-        //   __dirname,
-        //   `../../public/upload/${fileName}`
-        // );
-        // const fileDir = path.dirname(filePath);
-        // mkdirsSync(fileDir);
-        // const fileStream = fs.createWriteStream(filePath, {
-        //   flags: "a",
-        // });
-        // fileStream.write(sliceList[0]);
-        // fileStream.end();
-        // uploaded += sliceList[0].length;
-        // CacheModule.set(md5, uploaded);
-        // 上传完成后删除缓存
-        CacheModule.del(md5);
-        return {
+    const filesArray = [].concat(...Object.values(req.files));
+    const uploadResult = [];
+    // 遍历数组
+    for (let i = 0; i < filesArray.length; i++) {
+      const { name, mimetype, data, size, md5 } = filesArray[i];
+      const ext = extname(name);
+      const fileName = resolve(
+        __dirname,
+        `../../public/uploads/${ext}/`,
+        `${md5}${ext}`
+      );
+      if (!dirExists(path.dirname(fileName))) {
+        return res.status(500).json({
+          status: 500,
+          data: null,
+          message: "文件夹创建失败",
+        });
+      }
+      if (existsSync(fileName)) {
+        uploadResult.push({
           name,
-          // size 换算成 mb
-          size: mimetype,
-          md5,
-          uploaded,
-        };
-
-        // const filePath = path.resolve(
-        //     __dirname,
-        //     "../../public/images",
-        //     fileName
-        // );
-        // const fileBuffer = file.data;
-        // const sliceList = sliceFileBuffer(fileBuffer);
-        // const writeStream = fs.createWriteStream(filePath);
-        // for (let i = 0; i < sliceList.length; i++) {
-        //     writeStream.write(sliceList[i]);
-        // }
-        // writeStream.end();
-        // return {
-        //     name,
-        //     size,
-        //     mimetype,
-        //     md5,
-        //     filePath,
-        // };
-      })
-    );
-    res.json({
-      code: 200,
-      message: "上传成功",
-      data: result,
-    });
-  } catch (err) {
-    next(err);
+          mimetype,
+          size: bytesToSize(size),
+          url: `${getServerHost(req)}/uploads/${ext}/${md5}${ext}`,
+        });
+      } else {
+        await writeFile(fileName, data);
+        uploadResult.push({
+          name,
+          mimetype,
+          size: bytesToSize(size),
+          url: `${getServerHost(req)}/uploads/${ext}/${md5}${ext}`,
+        });
+      }
+    }
+    return COMMON.success(res, uploadResult, "上传成功");
+  } catch (error) {
+    next(error);
   }
 };
+
+// 文件上传,切片断点
+exports.uploadImageChunk = async (req, res, next) => {};
