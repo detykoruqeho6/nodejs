@@ -80,18 +80,21 @@ exports.isLogin = validator([
 ]);
 
 exports.hasUser = validator([
-  body("id").notEmpty().withMessage("id不能为空"),
-  body("id").custom(async (value) => {
-    if (!value) return;
-    const user = await UserModel.findOne({
-      where: {
-        id: value,
-      },
-    });
-    if (!user) {
-      return Promise.reject("用户不存在");
-    }
-  }),
+  // 验证 header 中的 token,authorization
+  header("authorization")
+    .if((value) => value)
+    .notEmpty()
+    .withMessage("请登录后操作")
+    .custom(async (value, { req }) => {
+      const user = await UserModel.findOne({
+        where: {
+          id: req?.user_id,
+        },
+      });
+      if (!user) {
+        return Promise.reject("用户不存在");
+      }
+    }),
 ]);
 // 修改个人信息参数验证
 exports.isUpdate = validator([
@@ -110,7 +113,7 @@ exports.isUpdate = validator([
     .custom(async (value, { req }) => {
       const user = await UserModel.findOne({
         where: {
-          id: req.body.id,
+          id: req.user_id,
         },
       });
       if (user.email === value) return;
@@ -133,7 +136,7 @@ exports.isUpdate = validator([
     .custom(async (value, { req }) => {
       const user = await UserModel.findOne({
         where: {
-          id: req.body.id,
+          id: req.user_id,
         },
       });
       if (user.phone === value) return;

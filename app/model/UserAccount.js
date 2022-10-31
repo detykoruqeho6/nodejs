@@ -1,7 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../../package/mysql");
 const { prefix } = require("../../config");
-const User = require("./User");
 
 const UserAccount = sequelize.define(
   "UserAccount",

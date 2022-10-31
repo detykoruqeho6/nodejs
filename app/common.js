@@ -92,18 +92,17 @@ exports.getOpenId = async (code) => {
   }
 };
 
-// 生成token,过期时间1天
+// 生成token
 exports.generateToken = (data) => {
   return jwt.sign(data, token_secret, {
-    expiresIn: "1d",
+    // expiresIn: "1d",
+    expiresIn: "1h",
     // 签发者
     issuer: "",
     // 受众
     audience: "",
     // 主题
     subject: "",
-    // 签发时间
-    notBefore: new Date().getTime(),
   });
 };
 

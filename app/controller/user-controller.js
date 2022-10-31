@@ -153,7 +153,8 @@ exports.logout = async (req, res) => {
 // 修改个人信息
 exports.update = async (req, res) => {
   try {
-    const { phone, id, password } = req.body;
+    const id = req.user_id;
+    const { phone, password } = req.body;
     let salt = null,
       cypPassword = null;
     if (phone) {
