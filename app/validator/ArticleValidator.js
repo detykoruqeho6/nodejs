@@ -44,6 +44,6 @@ exports.CreateArticleVali = validator([
 exports.UpdateArticleVali = validator([
   // 文章id,非空,整型,长度10
   body("id").notEmpty().withMessage("文章id不能为空"),
-  // 继承创建文章验证
-  ...exports.CreateArticleVali,
+  // 继承创建文章验证,
+  // ...exports.CreateArticleVali,
 ]);
