@@ -73,8 +73,55 @@ exports.createArticle = async (req, res, next) => {
       cate_id,
       author,
     });
-    return COMMON.success(res, article, "创建文章成功");
+    if (article) {
+      return COMMON.success(res, article.id, "创建文章成功");
+    }
   } catch (error) {
     next(error);
+  }
+};
+// Update article
+exports.updateArticle = async (req, res, next) => {
+  try {
+    const { id, title, content, tag, cover, cate_id = 1, author } = req.body;
+    const article = await ArticleModel.update(
+      {
+        title,
+        content,
+        tag,
+        cover,
+        cate_id,
+        author,
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    );
+    if (article) {
+      return COMMON.success(res, article.id, "更新文章成功");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+// Delete article
+exports.deleteArticle = async (req, res, next) => {
+  try {
+    const { id } = req.body;
+    if (!id) return COMMON.error(res, "文章id不能为空");
+    const article = await ArticleModel.destroy({
+      where: {
+        id,
+      },
+    });
+    if (article) {
+      return COMMON.success(res, article.id, "删除文章成功");
+    } else {
+      return COMMON.error(res, "删除失败,文章可能已经不存在咯");
+    }
+  } catch (err) {
+    next(err);
   }
 };
