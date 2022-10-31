@@ -1,6 +1,7 @@
 const sequelize = require("../../package/mysql");
 const { prefix } = require("../../config");
 const { DataTypes } = require("sequelize");
+const GoodsCategoryModel = require("./GoodsCate");
 
 const Goods = sequelize.define(
   "Goods",
@@ -22,7 +23,7 @@ const Goods = sequelize.define(
     // 商品描述,非空,长度50
     desc: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
       comment: "商品描述",
     },
     // 商品内容,富文本,非空
@@ -33,15 +34,37 @@ const Goods = sequelize.define(
     },
     // 商品图片,JSON格式,长度500
     img: {
-      type: DataTypes.STRING(500),
-      allowNull: false,
+      type: DataTypes.JSON,
+      allowNull: true,
       comment: "商品图片",
     },
     // 商品价格,单价,非空,长度10
     price: {
       type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
+      allowNull: true,
+      defaultValue: 0,
       comment: "商品价格",
+    },
+    // 折扣,非空,长度10
+    discount: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+      defaultValue: 0,
+      comment: "折扣",
+    },
+    // 销量,非空,长度10
+    sales: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+      comment: "销量",
+    },
+    // 综合评分,非空,长度10
+    score: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+      defaultValue: 0,
+      comment: "综合评分",
     },
     // 商品状态,非空,长度10
     status: {
@@ -49,10 +72,9 @@ const Goods = sequelize.define(
       allowNull: false,
       defaultValue: 1,
     },
-    // 商品分类id,非空,长度10
     cate_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       comment: "商品分类id",
     },
   },
@@ -62,5 +84,12 @@ const Goods = sequelize.define(
     tableName: prefix + "Goods",
   }
 );
+
+// 一对多关联
+Goods.belongsTo(GoodsCategoryModel, {
+  foreignKey: "cate_id",
+  targetKey: "id",
+  as: "cate",
+});
 
 module.exports = Goods;

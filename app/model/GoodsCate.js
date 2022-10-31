@@ -1,6 +1,7 @@
 const sequelize = require("../../package/mysql");
 const { prefix } = require("../../config");
 const { DataTypes } = require("sequelize");
+const GoodsModel = require("./Goods");
 
 const GoodsCate = sequelize.define(
   "GoodsCate",
