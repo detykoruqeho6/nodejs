@@ -1,7 +1,6 @@
+const { Op } = require("sequelize");
 const GoodModel = require("../model/Goods"),
   GoodsCategoryModel = require("../model/GoodsCate");
-const { Op } = require("sequelize");
-
 // Get goods list
 exports.getGoodsList = async (req, res, next) => {
   try {
@@ -65,6 +64,13 @@ exports.createGoods = async (req, res, next) => {
       score,
       cate_id = 1,
     } = req.body;
+    // 先查询cate_id是否存在
+    const cate = await GoodsCategoryModel.findOne({
+      where: {
+        id: cate_id,
+      },
+    });
+    if (!cate) return COMMON.error(res, null, "分类不存在");
     const goods = await GoodModel.create({
       name,
       desc,

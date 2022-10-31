@@ -90,6 +90,7 @@ Goods.belongsTo(GoodsCategoryModel, {
   foreignKey: "cate_id",
   targetKey: "id",
   as: "cate",
+  onUpdate: "NO ACTION",
 });
 
 module.exports = Goods;

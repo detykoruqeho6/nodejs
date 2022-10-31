@@ -4,3 +4,4 @@ require("./Article");
 require("./ArticleCate");
 require("./Goods");
 require("./GoodsCate");
+require("./ShopAndMainInfo");
