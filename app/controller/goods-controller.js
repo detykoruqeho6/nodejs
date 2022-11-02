@@ -134,9 +134,7 @@ exports.DeleteGoods = async (req, res, next) => {
   try {
     const { id } = req.body;
     const goods = await GoodModel.destroy({
-      where: {
-        id,
-      },
+      where: { id },
     });
     if (goods) {
       return COMMON.success(res, goods, "删除商品成功");
