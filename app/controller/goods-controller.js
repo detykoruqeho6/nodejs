@@ -8,14 +8,9 @@ exports.getGoodsList = async (req, res, next) => {
       page = 1,
       limit = 10,
       title = "",
-      sort = [
-        {
-          field: "score",
-          order: "asc",
-        },
-      ],
+      sort = [],
     } = req.query;
-    // 排序价格从高到底,折扣从高到底,销量从高到底,上架时间从新到旧,综合评分从高到底
+    const sqrtArr = JSON.parse(sort);
     const sortMap = {
       price: "price",
       discount: "discount",
@@ -23,6 +18,14 @@ exports.getGoodsList = async (req, res, next) => {
       time: "createdAt",
       score: "score",
     };
+    // 如果所传的排序字段不在sortMap中，剔除错误的排序字段
+    if (sqrtArr.length > 0) {
+      sqrtArr.forEach((item) => {
+        if (!sortMap[item.prop]) {
+          sqrtArr.splice(sqrtArr.indexOf(item), 1);
+        }
+      });
+    }
     const goods = await GoodModel.findAll({
       where: {
         name: {
@@ -30,7 +33,7 @@ exports.getGoodsList = async (req, res, next) => {
         },
       },
       // 排序可能同时存在多个
-      order: sort.map((item) => [sortMap[item.field], item.order]),
+      order: sqrtArr.map((item) => [sortMap[item.field], item.order]),
       // order: [[sortMap[sort], sortType]],
       offset: (page - 1) * limit,
       limit: +limit,
@@ -41,8 +44,15 @@ exports.getGoodsList = async (req, res, next) => {
         },
       ],
     });
+    const total = await GoodModel.count({ where: { name: { [Op.like]: `%${title}%` } } });
+    const allPage = Math.ceil(total / limit);
+    const data = {
+      goods,
+      total,
+      allPage,
+    }
     if (goods) {
-      return COMMON.success(res, goods, "获取商品列表成功");
+      return COMMON.success(res, data, "获取商品列表成功");
     }
     return COMMON.error(res, null, "获取商品列表失败");
   } catch (error) {
