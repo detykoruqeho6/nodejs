@@ -8,6 +8,7 @@ const {
   getOpenId,
 } = require("../common");
 const { Op } = require("sequelize");
+const crypto = require("crypto");
 
 // 注册
 exports.register = async (req, res) => {
@@ -229,6 +230,41 @@ exports.info = async (req, res) => {
       return COMMON.success(res, user, "获取用户信息成功");
     }
     return COMMON.error(res, null, "获取用户信息失败,用户不存在");
+  } catch (error) {
+    return COMMON.error(res, null, error.message);
+  }
+};
+
+// 获取微信运动数据
+exports.getWeRunData = async (req, res, next) => {
+  try {
+    const { encryptedData, iv, code } = req.body;
+    const { openid, session_key } = await getOpenId(code);
+    // 解密微信运动步数
+    const result = decryptData(encryptedData, iv, session_key);
+    // console.log(result.stepInfoList);
+    return COMMON.success(res, result.stepInfoList, "获取微信运动数据成功");
+    
+
+    function decryptData(encry, iva, seskey) {
+      try {
+        // base64 decode
+        const sessionKey = Buffer.from(seskey, "base64");
+        const encryData = Buffer.from(encry, "base64");
+        const iv = Buffer.from(iva, "base64");
+        let decoded = "";
+        // 解密
+        const decipher = crypto.createDecipheriv("aes-128-cbc", sessionKey, iv);
+        // 设置自动 padding 为 true，删除填充补位
+        decipher.setAutoPadding(true);
+        decoded += decipher.update(encryData, "binary", "utf8");
+        decoded += decipher.final("utf8");
+        console.log(decoded);
+      } catch (err) {
+        console.log(err);
+        throw new Error("Illegal Buffer");
+      }
+    }
   } catch (error) {
     return COMMON.error(res, null, error.message);
   }

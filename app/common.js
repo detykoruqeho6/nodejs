@@ -1,20 +1,20 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const { token_secret, appId, appSecret } = require("../config");
+const { token_secret, appId, appSecret, tokenExpiresIn } = require("../config");
 const client = require("../package/redis");
 const axios = require("axios");
 
-exports.success = (res, data, message) => {
+exports.success = (res, data, message,status = 200) => {
   res.status(200).json({
-    status: 200,
+    status: status,
     data: data,
     message: message || "success",
   });
 };
 
-exports.error = (res, data, message) => {
+exports.error = (res, data, message,status = 400) => {
   res.status(400).json({
-    status: 400,
+    status: status,
     data: data,
     message: message || "error",
   });
@@ -96,7 +96,7 @@ exports.getOpenId = async (code) => {
 exports.generateToken = (data) => {
   return jwt.sign(data, token_secret, {
     // expiresIn: "1d",
-    expiresIn: "1h",
+    expiresIn: tokenExpiresIn,
     // 签发者
     issuer: "",
     // 受众

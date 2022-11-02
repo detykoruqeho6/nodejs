@@ -7,6 +7,7 @@ const {
   info,
   delete: deleteController,
   wxLogin,
+  getWeRunData,
 } = require("../controller/user-controller");
 const {
   isRegister,
@@ -24,5 +25,6 @@ router.post("/update", isAuth, hasUser, isUpdate, update); // 修改个人信息
 router.delete("/delete", isAuth, deleteController); // 账号注销
 router.post("/info", isAuth, info); // 获取用户信息
 router.post("/wlogin", wxLogin); // 微信登录
+router.post("/wxrun", getWeRunData);
 
 module.exports = router;

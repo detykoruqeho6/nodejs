@@ -8,7 +8,7 @@ const {
   DeleteGoods,
 } = require("../controller/goods-controller");
 
-router.get("/index", getGoodsList);
+router.get("/index", IsAuth,getGoodsList);
 router.post("/create", IsAuth, createGoods);
 router.post("/detail", IsAuth, GoodsDetail);
 router.post("/update", IsAuth, UpdateGoods);
