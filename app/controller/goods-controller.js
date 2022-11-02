@@ -4,12 +4,7 @@ const GoodModel = require("../model/Goods"),
 // Get goods list
 exports.getGoodsList = async (req, res, next) => {
   try {
-    const {
-      page = 1,
-      limit = 10,
-      title = "",
-      sort = [],
-    } = req.query;
+    const { page = 1, limit = 10, title = "", sort = [] } = req.query;
     const sqrtArr = JSON.parse(sort);
     const sortMap = {
       price: "price",
@@ -44,13 +39,15 @@ exports.getGoodsList = async (req, res, next) => {
         },
       ],
     });
-    const total = await GoodModel.count({ where: { name: { [Op.like]: `%${title}%` } } });
+    const total = await GoodModel.count({
+      where: { name: { [Op.like]: `%${title}%` } },
+    });
     const allPage = Math.ceil(total / limit);
     const data = {
       goods,
       total,
       allPage,
-    }
+    };
     if (goods) {
       return COMMON.success(res, data, "获取商品列表成功");
     }
@@ -106,9 +103,7 @@ exports.GoodsDetail = async (req, res, next) => {
   try {
     const { id } = req.body;
     const goods = await GoodModel.findOne({
-      where: {
-        id,
-      },
+      where: { id },
     });
     if (goods) {
       return COMMON.success(res, goods, "获取商品详情成功");
@@ -123,19 +118,8 @@ exports.UpdateGoods = async (req, res, next) => {
   try {
     const { id, name, cate_id, price, stock, status, desc } = req.body;
     const goods = await GoodModel.update(
-      {
-        name,
-        cate_id,
-        price,
-        stock,
-        status,
-        desc,
-      },
-      {
-        where: {
-          id,
-        },
-      }
+      { name, cate_id, price, stock, status, desc },
+      { where: { id } }
     );
     if (goods) {
       return COMMON.success(res, goods, "更新商品成功");
