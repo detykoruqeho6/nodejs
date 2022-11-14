@@ -65,7 +65,7 @@ app.use(function (err, req, res, next) {
   // 如果请求出现错误,则写入日志
   if (err.status == 500 || err.status == 404) {
     try {
-      const logPath = path.join(__dirname, "../log");
+      const logPath = path.join(__dirname, "./log");
 
       let logFile = moment().format("YYYY-MM-DD") + ".log";
       checkDirExist(logPath + "/error/");
