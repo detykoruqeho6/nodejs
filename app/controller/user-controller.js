@@ -202,14 +202,12 @@ exports.delete = async (req, res) => {
 // 获取用户信息
 exports.info = async (req, res) => {
   try {
-    const id = req.user;
+    const id = req.user_id ;
     if (!id) return COMMON.error(res, null, "参数错误");
     const user = await UserModel.findOne({
-      where: {
-        id,
-      },
+      where: {id},
       attributes: [
-        "id",
+        // "id",
         "account",
         "email",
         "phone",
@@ -218,13 +216,13 @@ exports.info = async (req, res) => {
         "introduction",
         "gender",
       ],
-      // include: [
-      //   {
-      //     model: UserAccountModel,
-      //     as: "hasAccount",
-      //     attributes: ["id", "is_freeze"],
-      //   },
-      // ],
+      include: [
+        {
+          model: UserAccountModel,
+          as: "hasAccount",
+          attributes: ["is_freeze"],
+        },
+      ],
     });
     if (user) {
       return COMMON.success(res, user, "获取用户信息成功");
