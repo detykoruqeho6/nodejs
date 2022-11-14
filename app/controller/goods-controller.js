@@ -4,7 +4,7 @@ const GoodModel = require("../model/Goods"),
 // Get goods list
 exports.getGoodsList = async (req, res, next) => {
   try {
-    const { page = 1, limit = 10, title = "", sort = [] } = req.query;
+    const { page = 1, limit = 10, title = "", sort = `[{"field":"price","order":"desc"}]` } = req.query;
     const sqrtArr = JSON.parse(sort);
     const sortMap = {
       price: "price",
