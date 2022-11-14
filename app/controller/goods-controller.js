@@ -4,7 +4,12 @@ const GoodModel = require("../model/Goods"),
 // Get goods list
 exports.getGoodsList = async (req, res, next) => {
   try {
-    const { page = 1, limit = 10, title = "", sort = `[{"field":"price","order":"desc"}]` } = req.query;
+    const {
+      page = 1,
+      limit = 10,
+      title = "",
+      sort = `[{"field":"price","order":"desc"}]`,
+    } = req.query;
     const sqrtArr = JSON.parse(sort);
     const sortMap = {
       price: "price",
@@ -77,7 +82,7 @@ exports.createGoods = async (req, res, next) => {
         id: cate_id,
       },
     });
-    if (!cate) return COMMON.error(res, null, "分类不存在");
+    if (!cate) return COMMON.error(res, null, "分类不存在!");
     const goods = await GoodModel.create({
       name,
       desc,

@@ -242,9 +242,10 @@ exports.getWeRunData = async (req, res, next) => {
     const { openid, session_key } = await getOpenId(code);
     // 解密微信运动步数
     const result = decryptData(encryptedData, iv, session_key);
-    // console.log(result.stepInfoList);
-    return COMMON.success(res, result.stepInfoList, "获取微信运动数据成功");
-    
+    // 获取今天的步数
+    const stepInfoList = result.stepInfoList;
+    const todayStep = stepInfoList[stepInfoList.length - 1];
+    return COMMON.success(res, todayStep, "获取微信运动数据成功");
 
     function decryptData(encry, iva, seskey) {
       try {
@@ -259,7 +260,7 @@ exports.getWeRunData = async (req, res, next) => {
         decipher.setAutoPadding(true);
         decoded += decipher.update(encryData, "binary", "utf8");
         decoded += decipher.final("utf8");
-        console.log(decoded);
+        return JSON.parse(decoded);
       } catch (err) {
         console.log(err);
         throw new Error("Illegal Buffer");
