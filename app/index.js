@@ -2,6 +2,7 @@ const router = require("express").Router();
 
 // 设置服务根目录
 router.get("/", (req, res) => {
+  res.header("Content-Type", "text/html");
   res.render("index", { title: "Express" });
 });
 
