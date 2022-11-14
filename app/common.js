@@ -4,7 +4,7 @@ const { token_secret, appId, appSecret, tokenExpiresIn } = require("../config");
 const client = require("../package/redis");
 const axios = require("axios");
 
-exports.success = (res, data, message,status = 200) => {
+exports.success = (res, data, message, status = 200) => {
   res.status(200).json({
     status: status,
     data: data,
@@ -12,7 +12,7 @@ exports.success = (res, data, message,status = 200) => {
   });
 };
 
-exports.error = (res, data, message,status = 400) => {
+exports.error = (res, data, message, status = 400) => {
   res.status(400).json({
     status: status,
     data: data,
@@ -108,13 +108,28 @@ exports.generateToken = (data) => {
 
 // 解析token
 exports.verifyToken = (token) => {
-  return jwt.verify(token, token_secret);
+  try {
+    return jwt.verify(token, token_secret);
+  } catch (err) {
+    switch (err.name) {
+      case "TokenExpiredError":
+        return { code: 401, message: "token已过期" };
+      case "JsonWebTokenError":
+        return { code: 401, message: "token无效,请重新登录" };
+      default:
+        return { code: 401, message: "token无效" };
+    }
+  }
 };
 
 // 验证token是否过期
 exports.verifyTokenExp = (token) => {
   const decoded = jwt.decode(token, { complete: true });
-  return decoded.payload.exp < new Date().getTime() / 1000;
+  try {
+    return decoded.payload.exp < new Date().getTime() / 1000;
+  } catch (err) {
+    return decoded;
+  }
 };
 
 // 验证输入的邮箱验证码是否正确
