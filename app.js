@@ -2,9 +2,12 @@ const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const moment = require("moment");
 const logger = require("morgan");
 const sassMiddleware = require("node-sass-middleware");
 const fileUpload = require("express-fileupload");
+const Log = require("./package/log");
+const { checkDirExist } = require("./utils/index");
 
 require("dotenv").config();
 require("./package/mysql");
@@ -28,6 +31,8 @@ app.use(
     sourceMap: true,
   })
 );
+app.use(Log);
+
 // 允许跨域
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -52,9 +57,32 @@ app.use(function (err, req, res, next) {
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render("error");
-  res.json({
+  // res.status(err.status || 500);
+  // res.render("error");
+  // 如果请求出现错误,则写入日志
+  if (err.status == 500 || err.status == 404) {
+    try {
+      let logFile = moment().format("YYYY-MM-DD") + ".log";
+      checkDirExist(logPath + '/error/')
+      let logFilePath = path.join(logPath + '/error/' , logFile);
+      
+      let logData = `${moment().format("YYYY-MM-DD HH:mm:ss")} ${req.ip} ${
+        req.method
+      } ${req.originalUrl} ${req.headers["user-agent"]}
+
+`;
+      // 如果日志文件不存在,则创建
+      if (!fs.existsSync(logFilePath)) {
+        fs.writeFileSync(logFilePath, logData);
+      } else {
+        fs.appendFileSync(logFilePath, logData);
+      }
+      next();
+    } catch (err) {
+      next(err);
+    }
+  }
+  res.status(err.status || 500).json({
     code: err.status || 500,
     message: err.message,
     data: null,
