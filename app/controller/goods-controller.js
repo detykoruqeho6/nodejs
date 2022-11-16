@@ -54,7 +54,13 @@ exports.getGoodsList = async (req, res, next) => {
       allPage,
     };
     if (goods) {
-      return COMMON.success(res, data, "获取商品列表成功");
+      // return COMMON.success(res, data, "获取商品列表成功");
+      // return COMMON.success(res, data, "获取商品列表成功");
+      return res.json({
+        status: 400,
+        data,
+        msg: "获取商品列表成功",
+      });
     }
     return COMMON.error(res, null, "获取商品列表失败");
   } catch (error) {

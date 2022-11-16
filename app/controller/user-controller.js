@@ -202,10 +202,10 @@ exports.delete = async (req, res) => {
 // 获取用户信息
 exports.info = async (req, res) => {
   try {
-    const id = req.user_id ;
+    const id = req.user_id;
     if (!id) return COMMON.error(res, null, "参数错误");
     const user = await UserModel.findOne({
-      where: {id},
+      where: { id },
       attributes: [
         // "id",
         "account",

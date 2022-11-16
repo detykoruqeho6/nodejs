@@ -8,6 +8,7 @@ const sassMiddleware = require("node-sass-middleware");
 const fileUpload = require("express-fileupload");
 const Log = require("./package/log");
 const { checkDirExist } = require("./utils/index");
+const fs = require("fs");
 
 require("dotenv").config();
 require("./package/mysql");
@@ -96,13 +97,6 @@ app.use(function (err, req, res, next) {
   });
 });
 
-app.use(function (req, res, next) {
-  // 这里必须是Response响应的定时器【120秒】
-  res.setTimeout(120 * 1000, function () {
-    console.log("Request has timed out.");
-    return res.status(408).send("请求超时");
-  });
-  next();
-});
+
 
 module.exports = app;
