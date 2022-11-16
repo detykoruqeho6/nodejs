@@ -51,6 +51,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // 使用路由
 app.use("/", require("./app/index"));
 app.use("/api/", require("./app/index"));
+app.use("/backend/",require('./backend/index'))
 
 app.use(function (req, res, next) {
   next(createError(404));
