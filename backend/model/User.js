@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../../package/mysql");
-const { randomString } = require("../common");
+const { randomString } = require("../../common");
 const { prefix } = require("../../config");
 
 // 后台管理员用户表
@@ -23,16 +23,17 @@ const User = sequelize.define(
       unique: true,
       comment: "账号",
     },
-    // password密码,非空,长度32
+    // password密码,非空,长度64
     password: {
-      type: DataTypes.STRING(32),
+      type: DataTypes.STRING(64),
       allowNull: false,
       comment: "密码",
     },
-    // name姓名,非空,长度20
-    name: {
+    // 管理员账号标识,非空,长度20
+    markname: {
       type: DataTypes.STRING(20),
       allowNull: false,
+      defaultValue: randomString(20),
       comment: "姓名",
     },
     // salt 加密盐,非空,长度32
@@ -40,9 +41,6 @@ const User = sequelize.define(
       type: DataTypes.STRING(32),
       allowNull: false,
       comment: "加密盐",
-      set(val) {
-        console.log(this);
-      },
     },
     // 账号介绍,长度100
     introduction: {
@@ -54,23 +52,24 @@ const User = sequelize.define(
     // email邮箱,非空,长度50
     email: {
       type: DataTypes.STRING(50),
-      allowNull: false,
+      allowNull: true,
       // 判断是否为邮箱
       validate: {
         isEmail: true,
       },
       comment: "邮箱",
     },
-    // 当前管理员账号角色
+    // 当前管理员账号角色,JSON字符串,最多存储10个角色
     role: {
-      type: DataTypes.STRING(20),
-      allowNull: false,
-      comment: "角色",
+      type: DataTypes.JSON,
+      allowNull: true,
+      comment: "当前管理员账号角色",
     },
-    // 当前管理员账号状态
+    // 当前管理员账号状态,tinyint,长度1,默认值1
     status: {
-      type: DataTypes.STRING(20),
-      allowNull: false,
+      type: DataTypes.TINYINT(1),
+      allowNull: true,
+      defaultValue: 1,
       comment: "状态",
     },
   },
