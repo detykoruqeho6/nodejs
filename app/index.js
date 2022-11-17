@@ -1,5 +1,7 @@
 const router = require("express").Router();
 
+require("./model");
+
 // 设置服务根目录
 router.get("/", (req, res) => {
   res.header("Content-Type", "text/html");

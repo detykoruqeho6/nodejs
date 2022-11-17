@@ -6,7 +6,7 @@ const {
   verifyPassword,
   generateToken,
   getOpenId,
-} = require("../common");
+} = require("../../common");
 const { Op } = require("sequelize");
 const crypto = require("crypto");
 

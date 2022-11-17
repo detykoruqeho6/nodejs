@@ -1,4 +1,4 @@
-const { randomNumber } = require("../common");
+const { randomNumber } = require("../../common");
 const sendMail = require("../../package/email");
 const router = require("express").Router();
 const emailConfig = require("../../config").email;
@@ -9,11 +9,11 @@ router.get("/email", async (req, res) => {
   const captcha = randomNumber(6);
 
   const content = `
-<div>
+  <div>
     <h1>欢迎注册  欸嘿网 </h1>
     <div>打死都不要告诉别人你的验证码哦!</div>
     <p>你的验证码是: ${captcha}</p>
-</div> 
+  </div> 
 
 `;
   if (await client.get(email)) {

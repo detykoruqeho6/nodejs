@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const { token_secret, appId, appSecret, tokenExpiresIn } = require("../config");
-const client = require("../package/redis");
+const { token_secret, appId, appSecret, tokenExpiresIn } = require("./config");
+const client = require("./package/redis");
 const axios = require("axios");
 
 exports.success = (res, data, message, status = 200) => {
@@ -80,7 +80,7 @@ exports.verifyPassword = (password, salt, hash) => {
 
 exports.getOpenId = async (code) => {
   try {
-    const { appId, appSecret } = require("../config");
+    const { appId, appSecret } = require("./config");
     const { data } = await axios.get(
       `https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${appSecret}&js_code=${code}&grant_type=authorization_code`
     );

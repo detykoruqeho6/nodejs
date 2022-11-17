@@ -5,7 +5,7 @@ const {
   promises: { writeFile, appendFile },
   existsSync,
 } = require("fs");
-const { getServerHost } = require("../common");
+const { getServerHost } = require("../../common");
 
 // 判断文件夹是否存在，如果不存在则创建文件夹
 const dirExists = (dirname) => {

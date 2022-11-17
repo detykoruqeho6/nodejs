@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const sequelize = require("../../package/mysql");
-const { randomString } = require("../common");
+const { randomString } = require("../../common");
 const { prefix } = require("../../config");
 const UserAccount = require("./UserAccount");
 

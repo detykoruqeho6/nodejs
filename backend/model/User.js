@@ -4,7 +4,7 @@ const { randomString } = require("../common");
 const { prefix } = require("../../config");
 
 // 后台管理员用户表
-exports.User = sequelize.define(
+const User = sequelize.define(
   "bac_User",
   {
     // id主键,自增,非空,无符号,整型,长度10
@@ -35,6 +35,22 @@ exports.User = sequelize.define(
       allowNull: false,
       comment: "姓名",
     },
+    // salt 加密盐,非空,长度32
+    salt: {
+      type: DataTypes.STRING(32),
+      allowNull: false,
+      comment: "加密盐",
+      set(val) {
+        console.log(this);
+      },
+    },
+    // 账号介绍,长度100
+    introduction: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      comment: "账号介绍",
+    },
+
     // email邮箱,非空,长度50
     email: {
       type: DataTypes.STRING(50),
@@ -64,3 +80,5 @@ exports.User = sequelize.define(
     tableName: prefix + "bac_User",
   }
 );
+
+module.exports = User;

@@ -1,6 +1,6 @@
 // 中间价,获取 header 中的 Authorization 字段,并验证是否合法
 const jwt = require("jsonwebtoken");
-const { verifyToken, verifyTokenExp } = require("../common");
+const { verifyToken, verifyTokenExp } = require("../../common");
 
 module.exports = (req, res, next) => {
   try {
