@@ -12,7 +12,7 @@ exports.getGoodsList = async (req, res, next) => {
     } = req.query;
     const sqrtArr = JSON.parse(sort);
     const sortMap = {
-      price: "price",
+      price: "price", 
       discount: "discount",
       sales: "sales",
       time: "createdAt",
@@ -54,13 +54,7 @@ exports.getGoodsList = async (req, res, next) => {
       allPage,
     };
     if (goods) {
-      // return COMMON.success(res, data, "获取商品列表成功");
-      // return COMMON.success(res, data, "获取商品列表成功");
-      return res.json({
-        status: 400,
-        data,
-        msg: "获取商品列表成功",
-      });
+      return COMMON.success(res, data, "获取商品列表成功");
     }
     return COMMON.error(res, null, "获取商品列表失败");
   } catch (error) {

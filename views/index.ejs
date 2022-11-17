@@ -2,19 +2,60 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
     <style>
-      *{
-        margin: 0;padding: 0;
+      * {
+        margin: 0;
+        padding: 0;
       }
-      html,body{
+      html,
+      body {
         overflow: hidden;
       }
     </style>
   </head>
   <body>
-  你再干鸡毛?
+    <img src="/assets/1857.gif" alt="" />
+    <style>
+      /* 图片绕四周选装 */
+      img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 50%;
+        height: 50%;
+        transform: translateX(-50%) translateY(-50%);
+      }
 
-   <iframe src="//player.bilibili.com/player.html?aid=928861104&bvid=BV1uT4y1P7CX&cid=287639008&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="998" height="768"> </iframe>
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      img {
+        animation: rotate 10s linear infinite;
+      }
+    </style>
+
+    <script>
+      // 表格输出页面加载性能
+      console.table(performance.timing);
+      // 汉化
+      console.log("页面加载性能");
+      console.log("重定向耗时：", performance.timing.redirectEnd - performance.timing.redirectStart);
+      console.log("DNS查询耗时：", performance.timing.domainLookupEnd - performance.timing.domainLookupStart);
+      console.log("TCP连接耗时：", performance.timing.connectEnd - performance.timing.connectStart);
+      console.log("request请求耗时：", performance.timing.responseEnd - performance.timing.responseStart);
+      console.log("解析dom树耗时：", performance.timing.domComplete - performance.timing.domInteractive);
+      console.log("白屏时间：", performance.timing.responseStart - performance.timing.navigationStart);
+      console.log("domready时间：", performance.timing.domContentLoadedEventEnd - performance.timing.navigationStart);
+      console.log("onload时间：", performance.timing.loadEventEnd - performance.timing.navigationStart);
+
+      console.log("如果你看到这句话，说明你很闲");
+    </script>
   </body>
 </html>
