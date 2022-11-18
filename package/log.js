@@ -11,7 +11,6 @@ module.exports = async (req, res, next) => {
     checkDirExist(logPath + "/info/");
     let logFilePath = path.join(logPath + "/info/", logFile);
     // 日期 时间 ip 请求方式 请求地址 请求头 请求参数 请求状态
-    console.log(req.ipInfo);
     let logData = `
     ${moment().format("YYYY-MM-DD HH:mm:ss")} ${JSON.stringify(req.ipInfo)} ${
       req.method
