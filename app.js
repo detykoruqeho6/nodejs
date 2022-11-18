@@ -11,6 +11,7 @@ const { checkDirExist } = require("./utils/index");
 const expressip = require("express-ip");
 
 const fs = require("fs");
+const { RequestThrottling } = require("./middleware/request-sq");
 
 require("dotenv").config();
 require("./package/mysql");
@@ -57,7 +58,7 @@ app.use("/backend/", require("./backend/index"));
 app.use(function (req, res, next) {
   next(createError(404));
 });
-
+// app.use(RequestThrottling(1000, 10));
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
