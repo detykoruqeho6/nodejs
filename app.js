@@ -8,12 +8,13 @@ const sassMiddleware = require("node-sass-middleware");
 const fileUpload = require("express-fileupload");
 const Log = require("./package/log");
 const { checkDirExist } = require("./utils/index");
+const expressip = require("express-ip");
+
 const fs = require("fs");
 
 require("dotenv").config();
 require("./package/mysql");
 const app = express();
-
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -23,6 +24,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(expressip().getIpInfoMiddleware);
 app.use(
   sassMiddleware({
     src: path.join(__dirname, "public"),
@@ -50,7 +52,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // 使用路由
 app.use("/", require("./app/index"));
 app.use("/api/", require("./app/index"));
-app.use("/backend/",require('./backend/index'))
+app.use("/backend/", require("./backend/index"));
 
 app.use(function (req, res, next) {
   next(createError(404));
@@ -59,7 +61,7 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
-
+  console.log(req.ipInfo);
   // render the error page
   // res.status(err.status || 500);
   // res.render("error");
@@ -96,7 +98,5 @@ app.use(function (err, req, res, next) {
     data: null,
   });
 });
-
-
 
 module.exports = app;
