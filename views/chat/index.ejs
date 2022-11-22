@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>123</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.14/vue.js"
+      integrity="sha512-pSyYzOKCLD2xoGM1GwkeHbdXgMRVsSqQaaUoHskx/HF09POwvow2VfVEdARIYwdeFLbu+2FCOTRYuiyeGxXkEg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <!-- element-ui cdn -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        outline: none;
+      }
+      button {
+        border: none;
+      }
+      input {
+        border: 1px solid #eee;
+      }
+      html,
+      body,
+      #app {
+        width: 100%;
+        height: 100%;
+      }
+      .nickname {
+        line-height: 30px;
+        width: 100%;
+        border: 1px solid #00b7a3;
+      }
+      @-webkit-keyframes fColorAni {
+        0% {
+          color: #00b7a3;
+        }
+        50% {
+          color: #46b0ff;
+        }
+        100% {
+          color: #333;
+        }
+      }
+      .dis-flex {
+        display: flex;
+      }
+      .web-im {
+        width: 100%;
+        height: 100%;
+      }
+      .web-im .content {
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+        box-sizing: border-box;
+        min-width: 0;
+        flex-direction: column;
+      }
+      .web-im .content .header {
+        box-shadow: 1px -1px 2px 2px #eee;
+        line-height: 40px;
+        height: 40px;
+        font-size: 24px;
+        z-index: 10;
+        background: #fff;
+      }
+      .web-im .content .body {
+        flex: 1;
+        overflow-y: auto;
+        box-shadow: 1px 1px 1px #eee;
+      }
+      .web-im .content .footer {
+        box-shadow: 1px 1px 8px #eee;
+        height: 60px;
+      }
+      .web-im .left {
+        width: 220px;
+      }
+      .web-im .left .aside {
+        height: 100%;
+      }
+      .web-im .left .tabbar label {
+        flex: 1;
+        text-align: center;
+        line-height: 40px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .web-im .left .tabbar label.active {
+        color: #00b7a3;
+      }
+      .web-im .left .tabbar label:last-child {
+        border-left: 1px solid #eee;
+      }
+      .web-im .left .tabbar label.unread {
+        animation: fColorAni 0.3s infinite;
+      }
+      .web-im .left .user-list {
+        top: 0;
+      }
+      .web-im .left .func label {
+        flex: 1;
+        text-align: center;
+        line-height: 60px;
+        cursor: pointer;
+      }
+      .web-im .left .func label:last-child {
+        border-left: 1px solid #eee;
+      }
+      .web-im .left .user {
+        line-height: 40px;
+        padding: 0 8px;
+        border-bottom: 1px solid #eee;
+      }
+      .web-im .left .user.offline {
+        color: #ccc;
+      }
+      .web-im .left .user.online {
+        color: #333;
+      }
+      .web-im .left .user.ani {
+        animation: fColorAni 0.3s 5;
+      }
+      .web-im .left .user .tips-num {
+        height: 18px;
+        font-size: 12px;
+        color: #fff;
+        background: #00b7a3;
+        min-width: 20px;
+        border-radius: 50px;
+        display: inline-block;
+        line-height: 18px;
+        text-align: center;
+      }
+      .web-im .left .user .add-group {
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
+        text-align: center;
+        display: inline-block;
+        border-radius: 100%;
+        color: #00b7a3;
+        border: 1px solid #00b7a3;
+        cursor: pointer;
+      }
+      .web-im .right {
+        flex: 1;
+      }
+      .web-im .right .im-title {
+        padding-left: 20px;
+      }
+      .web-im .right .body {
+        padding: 10px 20px;
+      }
+      .web-im .right .im-record .join-tips {
+        position: relative !important;
+        display: block;
+        color: #ccc;
+        font-size: 15px;
+        text-align: center;
+        width: 100%;
+        left: 0 !important;
+        transform: none !important;
+      }
+      .web-im .right .im-record .li {
+        margin-bottom: 15px;
+        position: relative;
+        text-align: left;
+        color: #46b0ff;
+      }
+      .web-im .right .im-record .li:after {
+        content: "";
+        display: block;
+        clear: both;
+      }
+      .web-im .right .im-record .li .message-date {
+        font-size: 16px;
+        color: #b9b8b8;
+      }
+      .web-im .right .im-record .li .message-date .m-nickname {
+        color: #46b0ff;
+      }
+      .web-im .right .im-record .li.user {
+        text-align: right;
+        color: #00b7a3;
+      }
+      .web-im .right .im-record .li.user .message-date .m-nickname {
+        color: #00b7a3;
+      }
+      .web-im .right .im-record .message-box {
+        line-height: 30px;
+        font-size: 20px;
+      }
+      .web-im .right .footer input {
+        flex: 1;
+        padding: 0 20px;
+        font-size: 24px;
+      }
+      .web-im .right .footer button {
+        width: 200px;
+        background: #00b7a3;
+        color: #fff;
+        font-size: 24px;
+      }
+      div.my-el-message {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 4000;
+      }
+      div.my-el-message.success .my-el-message__group {
+        background-image: url("./assets/success.svg");
+      }
+      div.my-el-message .el-message-cover {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        background: #000;
+        opacity: 0.2;
+        top: 0;
+        left: 0;
+        z-index: 4001;
+      }
+      div.my-el-message .my-el-message__group {
+        margin: 0;
+        background: #fff url("./assets/warn.svg") no-repeat 17px center;
+        background-size: 20px 20px;
+        top: 50%;
+        border-radius: 6px;
+        padding: 0 40px 0 52px;
+        z-index: 4002;
+        height: 60px;
+        overflow: hidden;
+        line-height: 60px;
+        position: fixed;
+        min-width: 350px;
+        left: 50%;
+        transform: translateX(-50%);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+        animation: myshow 0.2s;
+      }
+      div.my-el-message .my-el-message__group p {
+        margin: 0;
+        color: #333;
+        font-size: 14px;
+        padding-right: 10px;
+      }
+      div.my-el-message .my-el-message__group .my-el-message-close {
+        width: 15px;
+        height: 15px;
+        background: url("./assets/close.svg") no-repeat;
+        background-size: 15px 15px;
+        position: absolute;
+        right: 14px;
+        top: 20px;
+        cursor: pointer;
+      }
+      @-moz-keyframes myshow {
+        from {
+          transform: scale(0) translateX(-100%);
+        }
+        to {
+          transform: scale(1) translateX(-50%);
+        }
+      }
+      @-webkit-keyframes myshow {
+        from {
+          transform: scale(0) translateX(-100%);
+        }
+        to {
+          transform: scale(1) translateX(-50%);
+        }
+      }
+      @-o-keyframes myshow {
+        from {
+          transform: scale(0) translateX(-100%);
+        }
+        to {
+          transform: scale(1) translateX(-50%);
+        }
+      }
+      @keyframes myshow {
+        from {
+          transform: scale(0) translateX(-100%);
+        }
+        to {
+          transform: scale(1) translateX(-50%);
+        }
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        height: 50px;
+        outline-offset: -2px;
+        outline: 2px solid #fff;
+        -webkit-border-radius: 4px;
+        border: 2px solid #fff;
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <c-dialog
+        ref="loginDialog"
+        title="请输入你的昵称"
+        confirmBtn="开始聊天"
+        @confirm="login"
+      >
+        <input
+          class="nickname"
+          v-model="nickname"
+          type="text"
+          placeholder="请输入你的昵称"
+        />
+      </c-dialog>
+
+      <c-dialog
+        ref="createGroupDialog"
+        title="请输入群名称"
+        confirmBtn="确认"
+        @confirm="createGroup"
+      >
+        <input
+          class="nickname"
+          v-model="groupName"
+          type="text"
+          placeholder="请输入群名称"
+        />
+      </c-dialog>
+
+      <div class="web-im dis-flex">
+        <div class="left">
+          <div class="aside content">
+            <div class="header">
+              <div class="tabbar dis-flex">
+                <label
+                  :class="{active:switchType==1, unread: usersUnRead}"
+                  for=""
+                  @click="switchType=1"
+                  >联系人</label
+                >
+                <label
+                  :class="{active:switchType==2, unread: groupsUnRead}"
+                  for=""
+                  @click="switchType=2"
+                  >群聊</label
+                >
+              </div>
+            </div>
+            <div class="body user-list">
+              <div
+                v-if="switchType==2"
+                class="user"
+                @click="triggerGroup(item)"
+                v-for="item in currentGroups"
+              >
+                {{ item.name }}
+                <span class="tips-num" v-if="item.unread">{{
+                  item.unread
+                }}</span>
+                <span
+                  v-if="!checkUserIsGroup(item)"
+                  @click.stop="addGroup(item)"
+                  class="add-group"
+                  >+</span
+                >
+              </div>
+              <div
+                v-if="switchType==1 && item.uid!=uid"
+                class="user"
+                @click="triggerPersonal(item)"
+                :class="{offline: !item.status}"
+                v-for="item in currentUserList"
+              >
+                {{ item.nickname }}
+                <span class="tips-num" v-if="item.unread">{{
+                  item.unread
+                }}</span>
+              </div>
+            </div>
+            <div class="footer">
+              <div class="func dis-flex">
+                <label @click="$refs.createGroupDialog.show()">新建群</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="right content">
+          <div class="header im-title">{{ title }}</div>
+          <div class="body im-record" id="im-record">
+            <div class="ul">
+              <div
+                class="li"
+                :class="{user: item.uid == uid}"
+                v-for="item in currentMessage"
+              >
+                <template v-if="item.type===1">
+                  <p class="join-tips">{{ item.msg }}</p>
+                </template>
+                <template v-else>
+                  <p class="message-date">
+                    <span class="m-nickname">{{ item.nickname }}</span>
+                    {{ item.date }}
+                  </p>
+                  <p class="message-box">{{ item.msg }}</p>
+                </template>
+              </div>
+            </div>
+          </div>
+          <div class="footer im-input dis-flex">
+            <input type="text" v-model="msg" placeholder="请输入内容" />
+            <button @click="send">发送</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // if (window.WebSocket) {
+      //   var ws = new WebSocket("ws://localhost:3005");
+      //   ws.onopen = function (e) {
+      //     console.log("连接服务器成功");
+      //     // 向服务器发送消息
+      //     ws.send(JSON.stringify({ nickname: "123", uid: 1 }));
+      //   };
+      //   ws.onclose = function (e) {
+      //     console.log("服务器关闭");
+      //   };
+      //   ws.onerror = function () {
+      //     console.log("连接出错");
+      //   };
+      //   // 接收服务器的消息
+      //   ws.onmessage = function (e) {
+      //     let message = "message:" + e.data + "";
+      //     console.log(message);
+      //   };
+      // }
+      Vue.component("c-dialog", {
+        template: `
+        <div class="popup" v-if="visable">
+          <div class="dialog">
+            <div class="title" v-if="title">{{title}}</div>
+            <div class="content">
+              <slot></slot>
+            </div>
+            <div class="btn">
+              <button @click="cancel">{{cancelBtn?cancelBtn:'取消'}}</button>
+              <button @click="confirm">{{confirmBtn?confirmBtn:'确认'}}</button>
+            </div>
+          </div>
+        </div>
+      `,
+        props: {
+          title: {
+            type: [String],
+            default: "",
+          },
+          cancelBtn: {
+            type: [String],
+            default: "",
+          },
+          confirmBtn: {
+            type: [String],
+            default: "",
+          },
+        },
+        data() {
+          return {
+            visable: false,
+          };
+        },
+        methods: {
+          show() {
+            this.visable = true;
+          },
+          hide() {
+            this.visable = false;
+          },
+          cancel() {
+            this.hide();
+          },
+          confirm() {
+            this.$emit("confirm");
+            this.hide();
+          },
+        },
+      });
+
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            title: "请选择群或者人员进行聊天",
+            switchType: 1,
+            uid: "",
+            nickname: "",
+            socket: "",
+            msg: "",
+            messageList: [],
+            users: [],
+            groups: [],
+            groupId: "",
+            bridge: [],
+            groupName: "",
+          };
+        },
+        mounted() {
+          let vm = this;
+          let user = localStorage.getItem("WEB_IM_USER");
+          user = (user && JSON.parse(user)) || {};
+          vm.uid = user.uid;
+          vm.nickname = user.nickname;
+          if (!vm.uid) {
+            vm.$refs.loginDialog.show();
+          } else {
+            vm.conWebSocket();
+          }
+          document.onkeydown = function (event) {
+            var e = event || window.event;
+            if (e && e.keyCode == 13) {
+              //回车键的键值为13
+              vm.send();
+            }
+          };
+          window.onbeforeunload = function (e) {
+            vm.socket.send(
+              JSON.stringify({
+                uid: vm.uid,
+                type: 2,
+                nickname: vm.nickname,
+                bridge: [],
+              })
+            );
+          };
+        },
+        computed: {
+          currentMessage() {
+            let vm = this;
+            let data = vm.messageList.filter((item) => {
+              if (item.type === 1) {
+                return item;
+              } else if (this.groupId) {
+                return item.groupId === this.groupId;
+              } else if (item.bridge.length) {
+                return (
+                  item.bridge.sort().join(",") == vm.bridge.sort().join(",")
+                );
+              }
+            });
+            data.map((item) => {
+              item.status = 0;
+              return item;
+            });
+            return data;
+          },
+          currentGroups() {
+            let vm = this;
+            vm.groups.map((group) => {
+              group.unread = this.messageList.filter((item) => {
+                return item.groupId === group.id && item.status === 1;
+              }).length;
+              return group;
+            });
+            return vm.groups;
+          },
+          groupsUnRead() {
+            return this.messageList.some((item) => {
+              return item.groupId && item.status === 1;
+            });
+          },
+          usersUnRead() {
+            return this.messageList.some((item) => {
+              return item.bridge.length && item.status === 1;
+            });
+          },
+          currentUserList() {
+            let vm = this;
+            vm.users.map((user) => {
+              user.unread = this.messageList.filter((item) => {
+                return (
+                  item.bridge.length &&
+                  item.uid === user.uid &&
+                  item.status === 1
+                );
+              }).length;
+              return user;
+            });
+            return vm.users;
+          },
+        },
+        methods: {
+          addGroup(item) {
+            this.socket.send(
+              JSON.stringify({
+                uid: this.uid,
+                type: 20,
+                nickname: this.nickname,
+                groupId: item.id,
+                groupName: item.name,
+                bridge: [],
+              })
+            );
+            this.$message({
+              type: "success",
+              message: `成功加入${item.name}群`,
+            });
+          },
+          checkUserIsGroup(item) {
+            return item.users.some((item) => {
+              return item.uid === this.uid;
+            });
+          },
+          createGroup() {
+            this.groupName = this.groupName.trim();
+            if (!this.groupName) {
+              this.$message({ type: "error", message: "请输入群名称" });
+              return;
+            }
+            this.socket.send(
+              JSON.stringify({
+                uid: this.uid,
+                type: 10,
+                nickname: this.nickname,
+                groupName: this.groupName,
+                bridge: [],
+              })
+            );
+          },
+          triggerGroup(item) {
+            let issome = item.users.some((item) => {
+              return item.uid === this.uid;
+            });
+            if (!issome) {
+              this.$message({
+                type: "error",
+                message: `您还不是${item.name}群成员`,
+              });
+              return;
+            }
+            this.bridge = [];
+            this.groupId = item.id;
+            this.title = `和${item.name}群成员聊天`;
+          },
+          triggerPersonal(item) {
+            if (this.uid === item.uid) {
+              return;
+            }
+            this.groupId = "";
+            this.bridge = [this.uid, item.uid];
+            this.title = `和${item.nickname}聊天`;
+          },
+          send() {
+            this.msg = this.msg.trim();
+            if (!this.msg) {
+              return;
+            }
+            if (!this.bridge.length && !this.groupId) {
+              this.$message({ type: "error", message: "请选择发送人或者群" });
+              return;
+            }
+            this.sendMessage(100, this.msg);
+          },
+          sendMessage(type, msg) {
+            this.socket.send(
+              JSON.stringify({
+                uid: this.uid,
+                type: type,
+                nickname: this.nickname,
+                msg: msg,
+                bridge: this.bridge,
+                groupId: this.groupId,
+              })
+            );
+            this.msg = "";
+          },
+          conWebSocket() {
+            let vm = this;
+            if (window.WebSocket) {
+              vm.socket = new WebSocket("ws://localhost:3005");
+              let socket = vm.socket;
+              socket.onopen = function (e) {
+                console.log("连接服务器成功");
+                vm.$message({ type: "success", message: "连接服务器成功" });
+                if (!vm.uid) {
+                  vm.uid = "web_im_" + moment().valueOf();
+                  localStorage.setItem(
+                    "WEB_IM_USER",
+                    JSON.stringify({
+                      uid: vm.uid,
+                      nickname: vm.nickname,
+                    })
+                  );
+                }
+                vm.sendMessage(1);
+              };
+              socket.onclose = function (e) {
+                console.log("服务器关闭");
+              };
+              socket.onerror = function () {
+                console.log("连接出错");
+              };
+              // 接收服务器的消息
+              socket.onmessage = function (e) {
+                let message = JSON.parse(e.data);
+                vm.messageList.push(message);
+                if (message.users) {
+                  vm.users = message.users;
+                }
+                if (message.groups) {
+                  vm.groups = message.groups;
+                }
+
+                vm.$nextTick(function () {
+                  var div = document.getElementById("im-record");
+                  div.scrollTop = div.scrollHeight;
+                });
+              };
+            }
+          },
+          login() {
+            this.nickname = this.nickname.trim();
+            if (!this.nickname) {
+              this.$message({ type: "error", message: "请输入您的昵称" });
+              return;
+            }
+            this.$refs.loginDialog.hide();
+            this.conWebSocket();
+          },
+        },
+      });
+    </script>
+  </body>
+  <style>
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+    .dialog {
+      position: relative;
+      width: 500px;
+      height: auto;
+      left: 50%;
+      top: 50%;
+      background: #ffffff;
+      border-radius: 5px;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      box-shadow: 2px 1px 1px #eee;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .btn button {
+      padding: 5px 10px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      background: #fff;
+      cursor: pointer;
+    }
+    .btn button:hover {
+      background: #eee;
+    }
+  </style>
+</html>

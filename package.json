@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "chat": "nodemon ./bin/chat",
+    "socket": "nodemon ./chat/bin.chat"
   },
   "dependencies": {
     "axios": "^1.1.3",
@@ -27,6 +29,7 @@
     "mysql2": "^2.3.3",
     "node-cache": "^5.1.2",
     "node-sass-middleware": "0.11.0",
+    "nodejs-websocket": "^1.7.2",
     "nodemailer": "^6.8.0",
     "nodemon": "^2.0.20",
     "qs": "^6.11.0",
