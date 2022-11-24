@@ -15,15 +15,13 @@
     </style>
   </head>
   <body>
-    <img src="/assets/1857.gif" alt="" />
+    <img
+      src="http://qiniu.picgo.srliforever.ltd/img/bilibili_link.png"
+      alt=""
+    />
     <style>
       /* 图片绕四周选装 */
       img {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 50%;
-        height: 50%;
         transform: translateX(-50%) translateY(-50%);
       }
 
@@ -46,14 +44,40 @@
       console.table(performance.timing);
       // 汉化
       console.log("页面加载性能");
-      console.log("重定向耗时：", performance.timing.redirectEnd - performance.timing.redirectStart);
-      console.log("DNS查询耗时：", performance.timing.domainLookupEnd - performance.timing.domainLookupStart);
-      console.log("TCP连接耗时：", performance.timing.connectEnd - performance.timing.connectStart);
-      console.log("request请求耗时：", performance.timing.responseEnd - performance.timing.responseStart);
-      console.log("解析dom树耗时：", performance.timing.domComplete - performance.timing.domInteractive);
-      console.log("白屏时间：", performance.timing.responseStart - performance.timing.navigationStart);
-      console.log("domready时间：", performance.timing.domContentLoadedEventEnd - performance.timing.navigationStart);
-      console.log("onload时间：", performance.timing.loadEventEnd - performance.timing.navigationStart);
+      console.log(
+        "重定向耗时：",
+        performance.timing.redirectEnd - performance.timing.redirectStart
+      );
+      console.log(
+        "DNS查询耗时：",
+        performance.timing.domainLookupEnd -
+          performance.timing.domainLookupStart
+      );
+      console.log(
+        "TCP连接耗时：",
+        performance.timing.connectEnd - performance.timing.connectStart
+      );
+      console.log(
+        "request请求耗时：",
+        performance.timing.responseEnd - performance.timing.responseStart
+      );
+      console.log(
+        "解析dom树耗时：",
+        performance.timing.domComplete - performance.timing.domInteractive
+      );
+      console.log(
+        "白屏时间：",
+        performance.timing.responseStart - performance.timing.navigationStart
+      );
+      console.log(
+        "domready时间：",
+        performance.timing.domContentLoadedEventEnd -
+          performance.timing.navigationStart
+      );
+      console.log(
+        "onload时间：",
+        performance.timing.loadEventEnd - performance.timing.navigationStart
+      );
 
       console.log("如果你看到这句话，说明你很闲");
     </script>

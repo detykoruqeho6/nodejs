@@ -9,10 +9,11 @@ exports.getGoodsList = async (req, res, next) => {
       limit = 10,
       title = "",
       sort = `[{"field":"price","order":"desc"}]`,
+      id = "",
     } = req.query;
     const sqrtArr = JSON.parse(sort);
     const sortMap = {
-      price: "price", 
+      price: "price",
       discount: "discount",
       sales: "sales",
       time: "createdAt",
@@ -28,6 +29,9 @@ exports.getGoodsList = async (req, res, next) => {
     }
     const goods = await GoodModel.findAll({
       where: {
+        // 如果传入了id，就只查询id对应的商品
+        id: id && id !== "undefined" ? id : { [Op.ne]: null },
+
         name: {
           [Op.like]: `%${title}%`,
         },
@@ -45,7 +49,7 @@ exports.getGoodsList = async (req, res, next) => {
       ],
     });
     const total = await GoodModel.count({
-      where: { name: { [Op.like]: `%${title}%` } },
+      where: { name: { [Op.like]: `%${title}%` }, id },
     });
     const allPage = Math.ceil(total / limit);
     const data = {
