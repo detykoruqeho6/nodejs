@@ -80,7 +80,13 @@ exports.verifyPassword = (password, salt, hash) => {
 
 exports.getOpenId = async (code) => {
   try {
-    const { appId, appSecret } = require("./config");
+    const { appId, appSecret, isMockWlogin } = require("./config");
+    if (isMockWlogin) {
+      return {
+        openid: "mock-data-openid",
+        session_key: "mock-data-session_key",
+      };
+    }
     const { data } = await axios.get(
       `https://api.weixin.qq.com/sns/jscode2session?appid=${appId}&secret=${appSecret}&js_code=${code}&grant_type=authorization_code`
     );

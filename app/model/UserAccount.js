@@ -96,6 +96,13 @@ const UserAccount = sequelize.define(
       defaultValue: "",
       comment: "最后登录系统",
     },
+    // 是否为模拟数据
+    is_mock_user: {
+      type: DataTypes.TINYINT(4),
+      allowNull: true,
+      defaultValue: 1,
+      comment: "是否为模拟用户",
+    },
   },
   {
     sequelize,

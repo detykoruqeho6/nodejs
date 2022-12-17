@@ -67,9 +67,21 @@ const Article = sequelize.define(
 );
 
 Article.hasOne(ArticleCateModel, {
-  foreignKey: "id",
+  foreignKey: {
+    name: "id",
+    allowNull: false,
+  },
   sourceKey: "cate_id",
   as: "cate",
+});
+
+ArticleCateModel.belongsTo(Article, {
+  foreignKey: {
+    name: "article_id",
+    allowNull: false,
+  },
+  targetKey: "id",
+  as: "article",
 });
 
 module.exports = Article;

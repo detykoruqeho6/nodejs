@@ -19,6 +19,8 @@ module.exports = {
   },
   appId: "wx59c2dc3830f35b4e",
   appSecret: "79406e4ccd8eb13ff83ee0a21be86041",
-  // token过期时间 
-  tokenExpiresIn: '2h',
+  // token过期时间
+  tokenExpiresIn: "2h",
+  // 是否启用模拟 微信登录 环境,
+  isMockWlogin: true,
 };

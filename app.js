@@ -99,4 +99,9 @@ app.use(function (err, req, res, next) {
   });
 });
 
+process.on("unhandledRejection", (reason, promise) => {
+  console.log("Unhandled Rejection:", reason);
+  // 在这里处理
+});
+
 module.exports = app;

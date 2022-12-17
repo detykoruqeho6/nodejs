@@ -89,8 +89,9 @@ exports.wxLogin = async (req, res) => {
   try {
     const { code, encryptedData, iv } = req.body;
     const { openid, session_key } = await getOpenId(code);
-    // console.log(openid); // 用户唯一标识
-    // console.log(session_key); // 会话密钥
+
+    // openid); // 用户唯一标识
+    // session_key); // 会话密钥
 
     // 将用户信息存入数据库
     const user = await UserAccountModel.findOne({
