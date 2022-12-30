@@ -1,14 +1,8 @@
 const router = require("express").Router();
 
-require("./model");
- 
+require("./model"); // import model
 
-router.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
-router.use("/admin", require("./router/user"));
-
-
+router.use("/admin", require("./router/user")); // 管理员路由
+router.use("/admin/role", require("./router/role")); // 角色路由
 
 module.exports = router;

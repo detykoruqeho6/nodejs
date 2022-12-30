@@ -34,7 +34,7 @@ const User = sequelize.define(
       type: DataTypes.STRING(20),
       allowNull: false,
       defaultValue: randomString(20),
-      comment: "姓名",
+      comment: "姓名,管理员账号标识",
     },
     // salt 加密盐,非空,长度32
     salt: {
@@ -65,6 +65,13 @@ const User = sequelize.define(
       allowNull: true,
       comment: "当前管理员账号角色",
     },
+    // 账号是否单独路由权限,单独账号权限优先于角色权限
+    isRoute: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      comment: "账号是否单独路由权限",
+    },
     // 当前管理员账号状态,tinyint,长度1,默认值1
     status: {
       type: DataTypes.TINYINT(1),
@@ -72,10 +79,18 @@ const User = sequelize.define(
       defaultValue: 1,
       comment: "状态",
     },
+    // 账号排序
+    sort: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      comment: "账号排序",
+    },
   },
   {
     sequelize,
     charset: "utf8mb4",
+    timestamps: true,
     tableName: prefix + "bac_User",
   }
 );

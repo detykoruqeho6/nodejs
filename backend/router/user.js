@@ -1,4 +1,4 @@
-const { Login, Register } = require("../controller/User");
+const { Login, Create } = require("../controller/User");
 const {
   isLoginValidator,
   isRegisterValidator,
@@ -7,6 +7,6 @@ const {
 const router = require("express").Router();
 
 router.post("/login", isLoginValidator, Login);
-router.post("/register", isRegisterValidator, Register);
+router.post("/create", isRegisterValidator, Create);
 
 module.exports = router;

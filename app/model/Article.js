@@ -68,10 +68,9 @@ const Article = sequelize.define(
 
 Article.hasOne(ArticleCateModel, {
   foreignKey: {
-    name: "id",
+    name: "cate_id",
     allowNull: false,
   },
-  sourceKey: "cate_id",
   as: "cate",
 });
 

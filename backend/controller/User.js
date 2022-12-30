@@ -15,18 +15,16 @@ const {
  */
 exports.Login = async (req, res, next) => {
   try {
-    const { account, password } = req.body;
+    const { account, password, as_code } = req.body;
     if (!account || !password) {
       return COMMON.error(res, null, "账号或密码不能为空");
     }
     const newUser = await UserModel.findOne({
       where: { account },
     });
-
     if (!newUser) {
       return COMMON.error(res, null, "账号不存在");
     }
-
     const verify = verifyPassword(
       password,
       newUser.dataValues.salt,
@@ -50,14 +48,23 @@ exports.Login = async (req, res, next) => {
   }
 };
 /**
- * 账号注册
+ * 后台账号添加
  * @param {*} req
  * @param {*} res
  * @param {*} next
  */
-exports.Register = async (req, res, next) => {
+exports.Create = async (req, res, next) => {
   try {
-    const { account, password } = req.body;
+    const {
+      account, // 账号
+      password, // 密码
+      sort, // 账号排序
+      status, // 账号状态
+      role, // 账号角色
+      isRoute, // 是否单独设置账号权限
+      email, // 账号联系邮箱
+      introduction, // 账号简介
+    } = req.body;
 
     const user = await UserModel.findOne({
       where: { account },
@@ -71,15 +78,14 @@ exports.Register = async (req, res, next) => {
       account,
       password: encrypt.password,
       salt: encrypt.salt,
+      sort,
+      status,
+      role,
+      email,
+      introduction,
     });
-    const genTokenData = {
-      id: newUser.dataValues.id,
-      account: newUser.dataValues.account,
-      status: newUser.dataValues.status,
-      type: "BACKEND",
-    };
-    const token = generateToken(genTokenData);
-    return COMMON.success(res, { token }, "注册成功");
+
+    return COMMON.success(res, null, "注册成功");
   } catch (error) {
     next(error);
   }

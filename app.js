@@ -4,7 +4,6 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const moment = require("moment");
 const logger = require("morgan");
-const sassMiddleware = require("node-sass-middleware");
 const fileUpload = require("express-fileupload");
 const Log = require("./package/log");
 const { checkDirExist } = require("./utils/index");
@@ -20,20 +19,13 @@ const app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(expressip().getIpInfoMiddleware);
-app.use(
-  sassMiddleware({
-    src: path.join(__dirname, "public"),
-    dest: path.join(__dirname, "public"),
-    indentedSyntax: false, // true = .sass and false = .scss
-    sourceMap: false,
-  })
-);
 app.use(Log);
 
 // 允许跨域

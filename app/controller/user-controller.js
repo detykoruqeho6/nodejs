@@ -9,6 +9,7 @@ const {
 } = require("../../common");
 const { Op } = require("sequelize");
 const crypto = require("crypto");
+const { isMockWlogin } = require("../../config");
 
 // 注册
 exports.register = async (req, res) => {
@@ -89,12 +90,11 @@ exports.wxLogin = async (req, res) => {
   try {
     const { code, encryptedData, iv } = req.body;
     const { openid, session_key } = await getOpenId(code);
-
     // openid); // 用户唯一标识
     // session_key); // 会话密钥
 
     // 将用户信息存入数据库
-    const user = await UserAccountModel.findOne({
+    const userAccount = await UserAccountModel.findOne({
       where: {
         openid,
       },
@@ -107,7 +107,7 @@ exports.wxLogin = async (req, res) => {
         },
       ],
     });
-    if (!user) {
+    if (!userAccount) {
       // 如果两个表都不存在,则创建
       const user = await UserModel.create({});
       const user_account = await UserAccountModel.create({
@@ -115,6 +115,7 @@ exports.wxLogin = async (req, res) => {
         openid,
         session_key,
         last_ip: req.ip,
+        is_mock_user: isMockWlogin ? 0 : null,
       });
       const token = generateToken(user.dataValues);
       if (user_account.dataValues.is_freeze == 1) {
@@ -136,8 +137,14 @@ exports.wxLogin = async (req, res) => {
           },
         }
       );
+      const userInfo = await UserModel.findOne({
+        where: {
+          id: req.user_id,
+        },
+      });
       const token = generateToken(user.dataValues);
       return COMMON.success(res, {
+        ...userInfo,
         ...user.dataValues,
         token,
       });
