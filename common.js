@@ -20,6 +20,8 @@ exports.error = (res, data, message, status = 400) => {
   });
 };
 
+
+
 exports.notFound = (res, data, message) => {
   res.status(404).json({
     status: 404,
