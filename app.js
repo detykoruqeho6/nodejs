@@ -67,11 +67,9 @@ app.use(function (err, req, res, next) {
       let logFilePath = path.join(logPath + "/error/", logFile);
       // 日期 时间 ip 请求方式 请求地址 请求头 请求参数 请求状态
       let logData = `
-      ${moment().format("YYYY-MM-DD HH:mm:ss")} ${req.ip} ${req.method} ${
-        req.originalUrl
-      } ${req.headers["user-agent"]} ${JSON.stringify(req.body)} ${
-        res.statusCode
-      }
+      ${moment().format("YYYY-MM-DD HH:mm:ss")} ${req.ip} ${req.method} ${req.originalUrl
+        } ${req.headers["user-agent"]} ${JSON.stringify(req.body)} ${res.statusCode
+        }
       `;
       // 如果日志文件不存在,则创建
       if (!fs.existsSync(logFilePath)) {

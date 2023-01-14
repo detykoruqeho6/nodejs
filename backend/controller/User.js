@@ -111,3 +111,11 @@ exports.GetUserInfo = async (req, res, next) => {
     next(error);
   }
 }
+
+/**
+ * 获取当前账号路由权限
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+exports.GetUserPermissionRouter = async (req, res, next) => { }

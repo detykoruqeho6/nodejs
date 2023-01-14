@@ -119,15 +119,16 @@ exports.generateToken = (data) => {
  */
 exports.verifyToken = (token) => {
   try {
+
     return jwt.verify(token, token_secret);
   } catch (err) {
     switch (err.name) {
       case "TokenExpiredError":
-        throw { code: 401, message: "token已过期" };
+        throw { status: 401, message: "token已过期" };
       case "JsonWebTokenError":
-        throw { code: 401, message: "token无效!" };
+        throw { status: 401, message: "token无效!" };
       default:
-        throw { code: 401, message: "token无效!" };
+        throw { status: 401, message: "token无效!" };
     }
   }
 };
