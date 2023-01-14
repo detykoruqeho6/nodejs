@@ -20,8 +20,6 @@ exports.error = (res, data, message, status = 400) => {
   });
 };
 
-
-
 exports.notFound = (res, data, message) => {
   res.status(404).json({
     status: 404,
@@ -114,23 +112,31 @@ exports.generateToken = (data) => {
   });
 };
 
-// 解析token
+/**
+ * 解析token
+ * @param {*} token Token Hash
+ * @returns 
+ */
 exports.verifyToken = (token) => {
   try {
     return jwt.verify(token, token_secret);
   } catch (err) {
     switch (err.name) {
       case "TokenExpiredError":
-        return { code: 401, message: "token已过期" };
+        throw { code: 401, message: "token已过期" };
       case "JsonWebTokenError":
-        return { code: 401, message: "token无效,请重新登录" };
+        throw { code: 401, message: "token无效!" };
       default:
-        return { code: 401, message: "token无效" };
+        throw { code: 401, message: "token无效!" };
     }
   }
 };
 
-// 验证token是否过期
+/**
+ * 验证token是否过期
+ * @param {*} token Token Hash 
+ * @returns 
+ */
 exports.verifyTokenExp = (token) => {
   const decoded = jwt.decode(token, { complete: true });
   try {

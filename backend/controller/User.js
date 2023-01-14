@@ -90,3 +90,24 @@ exports.Create = async (req, res, next) => {
     next(error);
   }
 };
+/**
+ * 获取用户信息
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
+exports.GetUserInfo = async (req, res, next) => {
+  try {
+    const id = req.userId;
+    const user = await UserModel.findOne({
+      where: { id },
+      attributes: {
+        exclude: ["password", "salt", "createdAt", "updatedAt", "id", "sort"],
+      }
+    });
+    return COMMON.success(res, user, "获取成功");
+  } catch (error) {
+    next(error);
+  }
+}

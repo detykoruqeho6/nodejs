@@ -1,4 +1,5 @@
-const { Login, Create } = require("../controller/User");
+const { Login, Create, GetUserInfo } = require("../controller/User");
+const isAuth = require("../middleware/isAuth");
 const {
   isLoginValidator,
   isRegisterValidator,
@@ -6,7 +7,8 @@ const {
 
 const router = require("express").Router();
 
-router.post("/login", isLoginValidator, Login);
-router.post("/create", isRegisterValidator, Create);
+router.post("/login", isLoginValidator, Login); // 登录
+router.post("/get-info", isAuth, GetUserInfo) // 获取用户信息
+router.post("/create", isRegisterValidator, Create); // 注册
 
 module.exports = router;
