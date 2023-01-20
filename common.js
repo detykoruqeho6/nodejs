@@ -78,6 +78,11 @@ exports.verifyPassword = (password, salt, hash) => {
   return _hash.digest("hex") === hash;
 };
 
+/**
+ * 获取openid
+ * @param {*} code 
+ * @returns 
+ */
 exports.getOpenId = async (code) => {
   try {
     const { appId, appSecret, isMockWlogin } = require("./config");
@@ -119,7 +124,6 @@ exports.generateToken = (data) => {
  */
 exports.verifyToken = (token) => {
   try {
-
     return jwt.verify(token, token_secret);
   } catch (err) {
     switch (err.name) {

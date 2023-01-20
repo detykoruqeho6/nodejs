@@ -119,3 +119,18 @@ exports.GetUserInfo = async (req, res, next) => {
  * @param {*} next 
  */
 exports.GetUserPermissionRouter = async (req, res, next) => { }
+
+
+/**
+ * 退出登录
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ */
+exports.LogoOut = async (req, res, next) => {
+  try {
+    return COMMON.success(res, null, "退出成功");
+  } catch (error) {
+    next(error);
+  }
+}
